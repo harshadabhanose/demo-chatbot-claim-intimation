@@ -1,0 +1,52 @@
+[main]
+Hi there, Welcome to bizAmica demo bot. \nI am your assistant to help you to quickly intimate TPA about the proposed claim. :continue
+	Please enter the type of your policy. [[Individual Policy,Group Policy]] :defex
+		individual:Individual Policy
+			:call default.getDetails
+		group:Group Policy
+			:call default.getDetails
+		blank: :onException
+            I didn't understand that. Do you have an Individual Policy or Group Policy?
+[getDetails]
+Great! I would like to know a few things first.\nWhich number would you like to provide? [[Policy Number,Customer Id]] :defex
+	policyno: Policy Number
+		:call default.policynumber
+	custid: Customer Id | Cust Id 
+		:call default.customerid
+	blank: :onException
+		I didn't understand that. Would you like to provide Policy Number or Customer Id?
+[policynumber]
+Please provide your 10 digit Policy Number
+	polno:{{policynum:*}}
+		:call default.verified
+[customerid]
+Please provide your 8 digit Customer Id
+	custoid:{{customid:*}}
+		:call default.verified
+[verified]
+This policy is verified. It belongs to {{username}}.\nTo which city hospital is the patient being admitted?
+	hospital:{{hosp:*}}
+		What is the date of hospital admission in dd-mm-yyyy format?
+			doa:{{userdoa:*}}
+				One last question. What is the puropose of admission?
+					purpose:{{pur:*}}
+						:call default.summary
+[summary]
+	sum:We are done! The details you shared are :continue
+		botsum:{{details}} :continue
+			confirm: We would process your application on the basis of these details. Are these details correct? [[Yes,No]] :defex
+				label_keyv:Yes | Yup | Yeah | Ya | Y 
+					label_zozz:Thanks for the intimation. We will contact the hospital in 2 hours. You will get further information from hospital authorities.
+				label_kaoe:No | Nope | Na | N
+					:call default.startover
+				blank: :onException
+            		I didn't understand that. Are the details correct?
+[startover]
+	Sorry we will have to capture your details once again. Let's start over! :call default.main
+[common]
+Hi | Hello | Hey
+	Hello there. Please provide the details for previous question. 
+Who are you?
+	I'm a bot assistant that can help you with claim intimation. Please provide the details for previous question.
+Thanks | Thank you | ok | okay | bye | goodbye
+	Thanks for using the demo. If you have further queries / requirements, please contact us at datascience@bizamica.com
